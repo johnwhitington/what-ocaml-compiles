@@ -1375,9 +1375,11 @@ We copy `ocamlrun` into the boot directory, overwriting the one already there:
 cp byterun/ocamlrun boot/ocamlrun
 ```
 
+
 Now, we build `ocamlyacc`, the parser generator, which we shall need since
 OCaml's parser is defined using it:
 
+```
 cd yacc; /Applications/Xcode.app/Contents/Developer/usr/bin/make all
 gcc -DNDEBUG -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT   -c -o closure.o closure.c
 gcc -DNDEBUG -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT   -c -o error.o error.c
