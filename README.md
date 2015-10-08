@@ -1515,6 +1515,67 @@ sed -e "s|%%VERSION%%|`sed -e 1q ../VERSION`|" sys.mlp >sys.ml
 ../boot/ocamlrun ../boot/ocamlc -strict-sequence -w +33..39 -g -warn-error A -bin-annot -nostdlib -safe-string `./Compflags stdLabels.cmo` -c stdLabels.ml
 ```
 
+```
+../boot/ocamlrun ../boot/ocamlc -a -o stdlib.cma camlinternalFormatBasics.cmo pervasives.cmo array.cmo list.cmo char.cmo bytes.cmo string.cmo sys.cmo sort.cmo marshal.cmo obj.cmo int32.cmo int64.cmo nativeint.cmo lexing.cmo parsing.cmo set.cmo map.cmo stack.cmo queue.cmo camlinternalLazy.cmo lazy.cmo stream.cmo buffer.cmo camlinternalFormat.cmo printf.cmo arg.cmo printexc.cmo gc.cmo digest.cmo random.cmo hashtbl.cmo weak.cmo format.cmo scanf.cmo callback.cmo camlinternalOO.cmo oo.cmo camlinternalMod.cmo genlex.cmo filename.cmo complex.cmo arrayLabels.cmo listLabels.cmo bytesLabels.cmo stringLabels.cmo moreLabels.cmo stdLabels.cmo
+
+```
+../boot/ocamlrun ../boot/ocamlc -strict-sequence -w +33..39 -g -warn-error A -bin-annot -nostdlib -safe-string `./Compflags std_exit.cmo` -c std_exit.ml
+```
+
+```
+if true; then \
+	  echo '#!/usr/local/bin/ocamlrun' > camlheader && \
+	  echo '#!/usr/local/bin/ocamlrun' > target_camlheader && \
+	  echo '#!/usr/local/bin/ocamlrund' > camlheaderd && \
+	  echo '#!/usr/local/bin/ocamlrund' > target_camlheaderd && \
+	  echo '#!' | tr -d '\012' > camlheader_ur; \
+	else \
+	  for suff in '' d; do \
+	    gcc -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT  \
+	              -DRUNTIME_NAME='"/usr/local/bin/ocamlrun'$suff'"' \
+	              header.c -o tmpheader && \
+	    strip tmpheader && \
+	    mv tmpheader camlheader$suff && \
+	    gcc -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT  \
+	              -DRUNTIME_NAME='"/usr/local/bin/ocamlrun'$suff'"' \
+	              header.c -o tmpheader && \
+	    strip tmpheader && \
+	    mv tmpheader target_camlheader$suff; \
+	  done && \
+	  cp camlheader camlheader_ur; \
+	fi
+```
+
+```
+cd stdlib; cp stdlib.cma std_exit.cmo *.cmi camlheader ../boot
+```
+
+```
+if test -f boot/libcamlrun.a; then :; else \
+	  ln -s ../byterun/libcamlrun.a boot/libcamlrun.a; fi
+if test -d stdlib/caml; then :; else \
+	  ln -s ../byterun/caml stdlib/caml; fi
+```
+
+You can see that we are finished with `make coldstart` now. We have done
+`byterun`, `yacc`, `stdlib` and made the symbolic links.
+
+```
+# Start up the system from the distribution compiler
+coldstart:
+	cd byterun; $(MAKE) all
+	cp byterun/ocamlrun$(EXE) boot/ocamlrun$(EXE)
+	cd yacc; $(MAKE) all
+	cp yacc/ocamlyacc$(EXE) boot/ocamlyacc$(EXE)
+	cd stdlib; $(MAKE) COMPILER=../boot/ocamlc all
+	cd stdlib; cp $(LIBFILES) ../boot
+	if test -f boot/libcamlrun.a; then :; else \
+	  ln -s ../byterun/libcamlrun.a boot/libcamlrun.a; fi
+	if test -d stdlib/caml; then :; else \
+	  ln -s ../byterun/caml stdlib/caml; fi
+```
+
+
 4. Building the native code compiler
 ------------------------------------
 
