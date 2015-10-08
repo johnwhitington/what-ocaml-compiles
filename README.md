@@ -1517,6 +1517,7 @@ sed -e "s|%%VERSION%%|`sed -e 1q ../VERSION`|" sys.mlp >sys.ml
 
 ```
 ../boot/ocamlrun ../boot/ocamlc -a -o stdlib.cma camlinternalFormatBasics.cmo pervasives.cmo array.cmo list.cmo char.cmo bytes.cmo string.cmo sys.cmo sort.cmo marshal.cmo obj.cmo int32.cmo int64.cmo nativeint.cmo lexing.cmo parsing.cmo set.cmo map.cmo stack.cmo queue.cmo camlinternalLazy.cmo lazy.cmo stream.cmo buffer.cmo camlinternalFormat.cmo printf.cmo arg.cmo printexc.cmo gc.cmo digest.cmo random.cmo hashtbl.cmo weak.cmo format.cmo scanf.cmo callback.cmo camlinternalOO.cmo oo.cmo camlinternalMod.cmo genlex.cmo filename.cmo complex.cmo arrayLabels.cmo listLabels.cmo bytesLabels.cmo stringLabels.cmo moreLabels.cmo stdLabels.cmo
+```
 
 ```
 ../boot/ocamlrun ../boot/ocamlc -strict-sequence -w +33..39 -g -warn-error A -bin-annot -nostdlib -safe-string `./Compflags std_exit.cmo` -c std_exit.ml
