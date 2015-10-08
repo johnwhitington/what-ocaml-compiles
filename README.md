@@ -14,6 +14,7 @@ http://www.github.com/johnwhitington/what-ocaml-compiles
 2. Running configure
 --------------------
 
+```
 Configuring OCaml version 4.03.0+dev10-2015-07-29
 Configuring for host x86_64-apple-darwin15.0.0 ...
 Configuring for target x86_64-apple-darwin15.0.0 ...
@@ -124,28 +125,39 @@ Configuration for the "graph" library:
         options for linking ...... -L/opt/X11/lib -lX11
 
 ** OCaml configuration completed successfully **
-
+```
 
 (state of directory now)
 
 3. Building the bytecode compiler
 ---------------------------------
 
+```
 /Applications/Xcode.app/Contents/Developer/usr/bin/make coldstart
+```
 
+```
 cd byterun; /Applications/Xcode.app/Contents/Developer/usr/bin/make all
+```
 
+```
 sed -n -e '/^  /s/ \([A-Z]\)/ \&\&lbl_\1/gp' \
 	       -e '/^}/q' caml/instruct.h > caml/jumptbl.h
+```
 
+```
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o interp.o interp.c
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o misc.o misc.c
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o stacks.o stacks.c
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o fix_code.o fix_code.c
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o startup_aux.o startup_aux.c
+```
 
+```
 ../tools/make-version-header.sh ../VERSION > caml/version.h
+```
 
+```
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o startup.o startup.c
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o freelist.o freelist.c
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o major_gc.o major_gc.c
@@ -186,9 +198,12 @@ gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFF
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o dynlink.o dynlink.c
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o unix.o unix.c
 gcc -DCAML_NAME_SPACE -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT    -c -o main.o main.c
+```
 
+```
 ar rc libcamlrun.a interp.o misc.o stacks.o fix_code.o startup_aux.o startup.o freelist.o major_gc.o minor_gc.o memory.o alloc.o roots.o globroots.o fail.o signals.o signals_byt.o printexc.o backtrace_prim.o backtrace.o compare.o ints.o floats.o str.o array.o io.o extern.o intern.o hash.o sys.o meta.o parsing.o gc_ctrl.o terminfo.o md5.o obj.o lexing.o callback.o debugger.o weak.o compact.o finalise.o custom.o dynlink.o unix.o main.o
 ranlib libcamlrun.a
+```
 
 4. Building the native code compiler
 ------------------------------------
