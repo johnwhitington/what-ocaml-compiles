@@ -1,0 +1,111 @@
+Configuring OCaml version 4.03.0+dev10-2015-07-29
+Configuring for host x86_64-apple-darwin15.0.0 ...
+Configuring for target x86_64-apple-darwin15.0.0 ...
+Using compiler gcc.
+Compiler family and version: clang-__clang_major-1.
+The C compiler is ISO C99 compliant.
+Checking the sizes of integers and pointers...
+Wow! A 64 bit architecture!
+This is a little-endian architecture.
+Doubles can be word-aligned.
+64-bit integers can be word-aligned.
+ranlib found
+#! appears to work in shell scripts.
+POSIX signal handling found.
+expm1(), log1p(), hypot(), copysign() found.
+getrusage() found.
+times() found.
+termcap functions found (with libraries '-lcurses')
+You have BSD sockets.
+socklen_t is defined in <sys/socket.h>
+inet_aton() found.
+IPv6 is supported.
+stdint.h found.
+unistd.h found.
+off_t is defined in <sys/types.h>
+dirent.h found.
+rewinddir() found.
+lockf() found.
+mkfifo() found.
+getcwd() found.
+getwd() found.
+getpriority() found.
+utime() found.
+utimes() found.
+dup2() found.
+fchmod() found.
+truncate() found.
+sys/select.h found.
+select() found.
+symlink() found.
+waitpid() found.
+wait4() found.
+getgroups() found.
+setgroups() found.
+initgroups() found.
+POSIX termios found.
+Asynchronous I/O are supported.
+setitimer() found.
+gethostname() found.
+uname() found.
+gettimeofday() found.
+mktime() found.
+setsid() found.
+putenv() found.
+setlocale() and <locale.h> found.
+dlopen() found.
+Dynamic loading of shared libraries is supported.
+mmap() found.
+pwrite() found
+stat() supports nanosecond precision.
+mkstemp() found
+nice() found
+Replay debugger supported.
+System stack overflow can be detected.
+POSIX threads library supported.
+Options for linking with POSIX threads: -lpthread
+sigwait() found
+Bytecode threads library supported.
+X11 works
+Options for compiling for X11: -I/opt/X11/include
+Options for linking with X11: -L/opt/X11/lib -lX11
+[WARNING] BFD library not found, 'objinfo' will be unable to display info  on .cmxs files.
+Assembler supports CFI
+
+** Configuration summary **
+
+Directories where OCaml will be installed:
+        binaries.................. /usr/local/bin
+        standard library.......... /usr/local/lib/ocaml
+        manual pages.............. /usr/local/man (with extension .1)
+Configuration for the bytecode compiler:
+        C compiler used........... gcc
+        options for compiling.....  -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+        options for linking.......     -lcurses -lpthread
+        shared libraries are supported
+        options for compiling.....   -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+        command for building...... gcc -bundle -flat_namespace -undefined suppress                    -Wl,-no_compact_unwind -o lib.so /a/path objs
+Configuration for the native-code compiler:
+        hardware architecture..... amd64
+        OS variant................ macosx
+        C compiler used........... gcc
+        options for compiling.....  -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+        options for linking.......   
+        assembler ................ clang -arch x86_64 -c
+        preprocessed assembler ... clang -arch x86_64 -c
+        assembler supports CFI ... yes
+        with frame pointers....... no
+        naked pointers forbidden.. no
+        native dynlink ........... true
+        profiling with gprof ..... supported
+Source-level replay debugger: supported
+Additional libraries supported:
+        unix str num dynlink bigarray systhreads threads graph
+Configuration for the "num" library:
+        target architecture ...... amd64 (asm level 1)
+Configuration for the "graph" library:
+        options for compiling .... -I/opt/X11/include
+        options for linking ...... -L/opt/X11/lib -lX11
+
+** OCaml configuration completed successfully **
+

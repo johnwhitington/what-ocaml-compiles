@@ -1,0 +1,37 @@
+version: 4.02.3
+standard_library_default: /Users/john/.opam/4.02.3/lib/ocaml
+standard_library: /Users/john/.opam/4.02.3/lib/ocaml
+standard_runtime: /Users/john/.opam/4.02.3/bin/ocamlrun
+ccomp_type: cc
+bytecomp_c_compiler: gcc -O  -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -O 
+bytecomp_c_libraries: -lcurses -lpthread
+native_c_compiler: gcc -O  -D_FILE_OFFSET_BITS=64 -D_REENTRANT
+native_c_libraries: 
+native_pack_linker: ld -r -arch x86_64  -o 
+ranlib: ranlib
+cc_profile: -pg
+architecture: amd64
+model: default
+system: macosx
+asm: clang -arch x86_64 -c
+asm_cfi_supported: true
+with_frame_pointers: false
+ext_obj: .o
+ext_asm: .s
+ext_lib: .a
+ext_dll: .so
+os_type: Unix
+default_executable_name: a.out
+systhread_supported: true
+host: x86_64-apple-darwin14.4.0
+target: x86_64-apple-darwin14.4.0
+exec_magic_number: Caml1999X011
+cmi_magic_number: Caml1999I017
+cmo_magic_number: Caml1999O010
+cma_magic_number: Caml1999A011
+cmx_magic_number: Caml1999Y014
+cmxa_magic_number: Caml1999Z013
+ast_impl_magic_number: Caml1999M016
+ast_intf_magic_number: Caml1999N015
+cmxs_magic_number: Caml2007D002
+cmt_magic_number: Caml2012T004
