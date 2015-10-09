@@ -1,7 +1,7 @@
 What OCaml Compiles when it Compiles
 ====================================
 
-This document is written from a state of ignorance. Please forward all
+This document is written from a position of ignorance. Please forward all
 corrections to john / coherentgraphics co uk, or make an issue or pull request
 here:
 
@@ -2124,6 +2124,9 @@ let opRERAISE = 146
 let opRAISE_NOTRACE = 147
 ```
 
+Back to compiling `ocamlc`:
+
+```
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c bytecomp/opcodes.ml
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c bytecomp/cmo_format.mli
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c bytecomp/emitcode.mli
@@ -2144,19 +2147,41 @@ boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -w
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c driver/errors.ml
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c driver/compile.mli
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c driver/compile.ml
+```
 
+Now we build the full library form of the compiler to
+`compilerlibs/ocamlbytecomp.cma`:
+
+```
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -a -o compilerlibs/ocamlbytecomp.cma bytecomp/meta.cmo bytecomp/instruct.cmo bytecomp/bytegen.cmo bytecomp/printinstr.cmo bytecomp/opcodes.cmo bytecomp/emitcode.cmo bytecomp/bytesections.cmo bytecomp/dll.cmo bytecomp/symtable.cmo bytecomp/bytelink.cmo bytecomp/bytelibrarian.cmo bytecomp/bytepackager.cmo driver/errors.cmo driver/compile.cmo
+```
 
+Now, finally, compile the main file for the command line compiler `ocamlc`,
+producing a bytecode-compiled bytecode compiler:
+
+```
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c driver/main.mli
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c driver/main.ml
-
 boot/ocamlrun boot/ocamlc -nostdlib -I boot  -compat-32 -o ocamlc \
 	   compilerlibs/ocamlcommon.cma compilerlibs/ocamlbytecomp.cma driver/main.cmo
+```
 
+Making the subsidiary tools:
+
+```
 /Applications/Xcode.app/Contents/Developer/usr/bin/make ocamllex ocamlyacc ocamltools library
+```
+
+We have already done `ocamlyacc`:
+
+```
 cd yacc; /Applications/Xcode.app/Contents/Developer/usr/bin/make all
 make[4]: Nothing to be done for `all'.
+```
 
+The lexer generator `ocamllex`:
+
+```
 cd lex; /Applications/Xcode.app/Contents/Developer/usr/bin/make all
 ../boot/ocamlrun ../boot/ocamlc -strict-sequence -nostdlib -I ../boot -c -w +33..39 -warn-error A -bin-annot -safe-string cset.mli
 ../boot/ocamlrun ../boot/ocamlc -strict-sequence -nostdlib -I ../boot -c -w +33..39 -warn-error A -bin-annot -safe-string cset.ml
@@ -2184,15 +2209,30 @@ cd lex; /Applications/Xcode.app/Contents/Developer/usr/bin/make all
 ../boot/ocamlrun ../boot/ocamlc -strict-sequence -nostdlib -I ../boot -c -w +33..39 -warn-error A -bin-annot -safe-string outputbis.ml
 ../boot/ocamlrun ../boot/ocamlc -strict-sequence -nostdlib -I ../boot -c -w +33..39 -warn-error A -bin-annot -safe-string main.ml
 ../boot/ocamlrun ../boot/ocamlc -strict-sequence -nostdlib -I ../boot  -compat-32 -o ocamllex cset.cmo syntax.cmo parser.cmo lexer.cmo table.cmo lexgen.cmo compact.cmo common.cmo output.cmo outputbis.cmo main.cmo
+```
 
+FIXME Why do we get this in [3] and [4]? See above.
+
+```
 make[3]: Nothing to be done for `ocamlyacc'.
+```
 
+Some little parts of the native code compiler are actually required by the some
+things in the tools directory, which we are about to compile, so we compile them
+here.
+
+```
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c asmcomp/debuginfo.mli
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c asmcomp/clambda.mli
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c asmcomp/cmx_format.mli
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c asmcomp/printclambda.mli
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c asmcomp/printclambda.ml
+```
 
+We make the tools `ocamldep`, `ocamlprof`, `ocamlcp`, `ocamloptp`, `ocamlmktop`,
+`dumpobj`, `objinfo`, `read_cmt`:
+
+```
 cd tools; /Applications/Xcode.app/Contents/Developer/usr/bin/make all
 
 ../boot/ocamlrun ../boot/ocamlc -nostdlib -I ../boot -c -strict-sequence -w +27+32..39 -warn-error A -safe-string -I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp -I ../driver -I ../toplevel depend.mli
@@ -2246,6 +2286,12 @@ gcc -o objinfo_helper -O2 -fno-strict-aliasing -fwrapv -Wall -Werror -D_FILE_OFF
 ../boot/ocamlrun ../boot/ocamlc -nostdlib -I ../boot -c -strict-sequence -w +27+32..39 -warn-error A -safe-string -I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp -I ../driver -I ../toplevel cmt2annot.ml
 ../boot/ocamlrun ../boot/ocamlc -nostdlib -I ../boot -c -strict-sequence -w +27+32..39 -warn-error A -safe-string -I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp -I ../driver -I ../toplevel read_cmt.ml
 ../boot/ocamlrun ../boot/ocamlc -nostdlib -I ../boot -I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp -I ../driver -I ../toplevel -o read_cmt ../compilerlibs/ocamlcommon.cma ../compilerlibs/ocamlbytecomp.cma cmt2annot.cmo read_cmt.cmo
+```
+
+Time to build the standard library, using the new `ocamlc` we have made, making
+`stdlib.cma`:
+
+```
 cd stdlib; /Applications/Xcode.app/Contents/Developer/usr/bin/make all
 ../boot/ocamlrun ../ocamlc -strict-sequence -w +33..39 -g -warn-error A -bin-annot -nostdlib -safe-string `./Compflags camlinternalFormatBasics.cmi` -c camlinternalFormatBasics.mli
 ../boot/ocamlrun ../ocamlc -strict-sequence -w +33..39 -g -warn-error A -bin-annot -nostdlib -safe-string `./Compflags camlinternalFormatBasics.cmo` -c camlinternalFormatBasics.ml
@@ -2345,6 +2391,12 @@ cd stdlib; /Applications/Xcode.app/Contents/Developer/usr/bin/make all
 ../boot/ocamlrun ../ocamlc -strict-sequence -w +33..39 -g -warn-error A -bin-annot -nostdlib -safe-string `./Compflags stdLabels.cmo` -c stdLabels.ml
 ../boot/ocamlrun ../ocamlc -a -o stdlib.cma camlinternalFormatBasics.cmo pervasives.cmo array.cmo list.cmo char.cmo bytes.cmo string.cmo sys.cmo sort.cmo marshal.cmo obj.cmo int32.cmo int64.cmo nativeint.cmo lexing.cmo parsing.cmo set.cmo map.cmo stack.cmo queue.cmo camlinternalLazy.cmo lazy.cmo stream.cmo buffer.cmo camlinternalFormat.cmo printf.cmo arg.cmo printexc.cmo gc.cmo digest.cmo random.cmo hashtbl.cmo weak.cmo format.cmo scanf.cmo callback.cmo camlinternalOO.cmo oo.cmo camlinternalMod.cmo genlex.cmo filename.cmo complex.cmo arrayLabels.cmo listLabels.cmo bytesLabels.cmo stringLabels.cmo moreLabels.cmo stdLabels.cmo
 ../boot/ocamlrun ../ocamlc -strict-sequence -w +33..39 -g -warn-error A -bin-annot -nostdlib -safe-string `./Compflags std_exit.cmo` -c std_exit.ml
+```
+
+The is the end of `make coreall'. Now for `make ocaml', which builds the
+top-level loop `ocaml` command:
+
+```
 /Applications/Xcode.app/Contents/Developer/usr/bin/make ocaml
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c toplevel/genprintval.mli
 boot/ocamlrun boot/ocamlc -nostdlib -I boot -strict-sequence -w +33..39+48+50 -warn-error A -bin-annot -safe-string -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I toplevel -c toplevel/genprintval.ml
@@ -2364,8 +2416,23 @@ boot/ocamlrun boot/ocamlc -nostdlib -I boot  -o expunge compilerlibs/ocamlcommon
 boot/ocamlrun boot/ocamlc -nostdlib -I boot  -linkall -o ocaml.tmp \
 	  compilerlibs/ocamlcommon.cma compilerlibs/ocamlbytecomp.cma \
 	  compilerlibs/ocamltoplevel.cma toplevel/topstart.cmo
+```
+
+Note that we have built in to ocaml.tmp, not ocaml. The `expunge` tool is run on
+the bytecode executable to produce the final `ocaml` bytecode executable:
+
+FIXME: What does it do?
+
+```
 boot/ocamlrun ./expunge ocaml.tmp ocaml arg array arrayLabels buffer bytes bytesLabels callback camlinternalFormat camlinternalFormatBasics camlinternalLazy camlinternalMod camlinternalOO char complex digest filename format gc genlex hashtbl int32 int64 lazy lexing list listLabels map marshal moreLabels nativeint obj oo parsing pervasives printexc printf queue random scanf set sort stack stdLabels stream string stringLabels sys weak outcometree topdirs toploop
 rm -f ocaml.tmp
+```
+
+We build the things in the `otherlibs` directory, that is `bigarray`, `unix`,
+`threads` etc, so we can build the bytecode versions of `ocamlbuild`, the replay
+debugger, and the documentation generator `ocamldoc`:
+
+```
 /Applications/Xcode.app/Contents/Developer/usr/bin/make otherlibraries ocamlbuild.byte ocamldebugger \
 	  ocamldoc
 cd yacc; /Applications/Xcode.app/Contents/Developer/usr/bin/make all
@@ -2870,11 +2937,17 @@ cd ocamldoc && /Applications/Xcode.app/Contents/Developer/usr/bin/make all
 /Applications/Xcode.app/Contents/Developer/usr/bin/make generators
 ../boot/ocamlrun ../ocamlc -nostdlib -I ../stdlib -pp './remove_DEBUG' -I ../parsing -I ../utils -I ../typing -I ../driver -I ../bytecomp -I ../tools -I ../toplevel/ -I ../stdlib -I ../otherlibs/str -I ../otherlibs/dynlink -I ../otherlibs/unix -I ../otherlibs/num -I ../otherlibs/graph -warn-error A -safe-string -c generators/odoc_todo.ml
 ../boot/ocamlrun ../ocamlc -nostdlib -I ../stdlib -pp './remove_DEBUG' -I ../parsing -I ../utils -I ../typing -I ../driver -I ../bytecomp -I ../tools -I ../toplevel/ -I ../stdlib -I ../otherlibs/str -I ../otherlibs/dynlink -I ../otherlibs/unix -I ../otherlibs/num -I ../otherlibs/graph -warn-error A -safe-string -c generators/odoc_literate.ml
+```
+
+Build the man pages:
+
+```
 /Applications/Xcode.app/Contents/Developer/usr/bin/make manpages
 mkdir -p stdlib_man
 sh ./runocamldoc true -man -d stdlib_man -I ../parsing -I ../utils -I ../typing -I ../driver -I ../bytecomp -I ../tools -I ../toplevel/ -I ../stdlib -I ../otherlibs/str -I ../otherlibs/dynlink -I ../otherlibs/unix -I ../otherlibs/num -I ../otherlibs/graph \
 	-t "OCaml library" -man-mini \
 	../stdlib/*.mli ../parsing/*.mli ../otherlibs/unix/unix.mli ../otherlibs/str/str.mli ../otherlibs/bigarray/bigarray.mli ../otherlibs/num/num.mli
+```
 
 4. Building the native code compiler
 ------------------------------------
@@ -2883,6 +2956,6 @@ sh ./runocamldoc true -man -d stdlib_man -I ../parsing -I ../utils -I ../typing 
 -------------------
 
 6. Installing
----------------
+-------------
 
 
